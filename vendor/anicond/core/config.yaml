@@ -1,0 +1,64 @@
+# Defaults for the vendored conductivity libraries.
+#
+# This is PROJ_DCONDNET/scripts/core/config.yaml with the `paths:` section
+# dropped -- a web job has no BIDS cohort, so nothing here names a folder.
+# Read by vendor/core/general.py; see its docstring for what is and is not
+# allowed to live in here.
+
+tractography:
+  min_len_mm: 5
+  min_len_whole_brain_mm: 20
+  sh_order_max: 6
+  dtensor_fit_method: WLS      # was a hard-coded constant in the original general.py
+
+# Window the tract-based models and the tract reference share.
+tract_window:
+  edge_voxels: 3               # W (odd); ball diameter = W
+  min_center_tracts: 10        # min tracts through the voxel centre
+  min_tangent_tracts: 3        # min tracts contributing an in-window tangent
+
+labels:
+  tissue:
+    "-1": Wholebrain
+    "0": Background
+    "1": Blood_in
+    "2": Cancellous_bone
+    "3": Cortical_bone
+    "4": Cerebellar
+    "5": CSF
+    "6": CSF_Meninges
+    "7": Fat
+    "8": GM
+    "9": Mucous_membrane
+    "10": Muscle
+    "11": Scalp
+    "12": Eye_humour
+    "13": WM
+    "14": Brainstem
+    "15": Thalamus
+  GM_segs: 8
+  WM_segs: 13, 14, 15
+  # which conductivity_iso_<freq> table is in use; the app's page offers
+  # every <freq> the uploaded CSV carries and starts from this one
+  conductivity_freq_in_use: 10khz
+  conductivity_iso_10khz:
+    "1": 0.7
+    "2": 0.08
+    "3": 0.02
+    "4": 0.13
+    "5": 2
+    "6": 0.5      # CondNet-TART training table (was 2)
+    "7": 0.04
+    "8": 0.1
+    "9": 0.07
+    "10": 0.34
+    "11": 0.1
+    "12": 1.5
+    "13": 0.07
+    "14": 0.07       # = white matter (2026-10-09; was 0.179111 on 2026-10-08)
+    "15": 0.07
+  anicond_model:
+    "directmapping": Direct Mapping
+    "volumenormalized": Volume Normalized
+    "tractbased_g": Tract-based (geo. mean)
+    "tractbased_e": Tract-based (eff. cond.)
