@@ -1,0 +1,16 @@
+tissue_id,tissue,simnibs_tissue,conductivity_iso_10khz
+1,Blood_in,Blood,0.7
+2,Cancellous_bone,Spongy_bone,0.08
+3,Cortical_bone,Compact_bone,0.02
+4,Cerebellar,,0.13
+5,CSF,CSF,2
+6,CSF_Meninges,,0.5
+7,Fat,Fat,0.04
+8,GM,GM,0.1
+9,Mucous_membrane,,0.07
+10,Muscle,Muscle,0.34
+11,Scalp,Scalp,0.1
+12,Eye_humour,Eye_balls,1.5
+13,WM,WM,0.07
+14,Brainstem,,0.07
+15,Thalamus,,0.07

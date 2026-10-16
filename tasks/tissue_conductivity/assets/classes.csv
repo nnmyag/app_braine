@@ -1,0 +1,20 @@
+# The 15 tissue classes (names as in the CondNet-TART label maps) and the
+# Gabriel 1996 tissue whose frequency dependence each one follows. The 10 kHz
+# value itself comes from tasks/anicond/assets/default_target_conductivity.csv
+# (same tissue_id); class 0 (background) is always 0.
+class_id,name,gabriel_tissue
+0,background,
+1,blood_in,Blood
+2,cancellous_bone,Bone cancellous
+3,cortical_bone,Bone cortical
+4,cerebellar,Cerebellum
+5,csf,Cerebro spinal fluid
+6,csf_meninges,Cerebro spinal fluid
+7,fat,Fat
+8,gray_matter,Brain grey matter
+9,mucous_membrane,Mucous membrane
+10,muscle,Muscle
+11,scalp,Skin wet
+12,eye_humour,Vitreous humor
+13,white_matter,Brain white matter
+14,brainstem_cortical_nuclei,Brain white matter

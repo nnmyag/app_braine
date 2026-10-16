@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+  tasks/tract_simplify/assets/viewer.html — the 3D viewer under the canvas
+  --------------------------------------------------------------------------
+  Opened in an iframe by tasks/tract_simplify/web.py as
+      /gradio_api/file=<this file>?vol=<b0 url>&tracts=<trk url>&n=<count>&v=<k>
+  A separate document, so its script runs (a script inside a gr.HTML block
+  does not). NiiVue is imported from niivue.js next to this file; both are
+  served by Gradio because tasks/*/assets is in allowed_paths. Nothing here
+  is needed by any other page: if niivue.js is missing the task's page never
+  opens this viewer.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tracts</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #101214; overflow: hidden;
+               font-family: system-ui, sans-serif; color: #c9d1d9; }
+  #gl { width: 100%; height: 100%; display: block; }
+  #bar { position: absolute; left: 8px; top: 6px; font-size: 12px;
+         background: rgba(16,18,20,.7); padding: 3px 8px; border-radius: 4px; }
+  #bar label { margin-right: 10px; }
+  #msg { position: absolute; left: 8px; bottom: 6px; font-size: 12px;
+         color: #f59e0b; }
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="bar">
+  <label><input type="checkbox" id="slices" checked> slices</label>
+  <label>colour
+    <select id="color">
+      <option value="Global">direction</option>
+      <option value="Local">local direction</option>
+      <option value="Fixed">one colour</option>
+    </select></label>
+  <label>radius <input type="range" id="radius" min="0" max="1" step="0.1" value="0" style="width:70px;vertical-align:middle"></label>
+  <span id="count"></span>
+</div>
+<div id="msg"></div>
+<script type="module">
+  const params = new URLSearchParams(location.search);
+  const vol = params.get("vol"), tracts = params.get("tracts");
+  const msg = document.getElementById("msg");
+  document.getElementById("count").textContent =
+      params.get("n") ? `${Number(params.get("n")).toLocaleString()} streamlines` : "";
+  if (!vol || !tracts) {
+    msg.textContent = "no volume / tractogram given";
+  } else {
+    try {
+      const { Niivue } = await import("./niivue.js");
+      const nv = new Niivue({ backColor: [0.063, 0.071, 0.078, 1],
+                              show3Dcrosshair: true, isColorbar: false });
+      await nv.attachToCanvas(document.getElementById("gl"));
+      nv.opts.multiplanarForceRender = true;
+      nv.setSliceType(nv.sliceTypeMultiplanar);
+      await nv.loadVolumes([{ url: vol, name: "reference.nii.gz", colormap: "gray" }]);
+      // The .trk carries the reference grid in its header, so NiiVue puts
+      // it in RAS mm itself; the browser cache is defeated by the v= query
+      // on the page, and again here, on the file itself.
+      await nv.loadMeshes([{ url: `${tracts}?v=${params.get("v") || 0}`,
+                             name: "tracts.trk" }]);
+      const mesh = nv.meshes[0];
+      const setProp = (k, v) => nv.setMeshProperty(mesh.id, k, v);
+      setProp("fiberColor", "Global");
+      setProp("fiberRadius", 0);
+      document.getElementById("color").onchange = e => setProp("fiberColor", e.target.value);
+      document.getElementById("radius").oninput = e => setProp("fiberRadius", Number(e.target.value));
+      document.getElementById("slices").onchange = e => {
+        nv.setSliceType(e.target.checked ? nv.sliceTypeMultiplanar : nv.sliceTypeRender);
+      };
+    } catch (err) {
+      msg.textContent = `viewer failed: ${err && err.message ? err.message : err}`;
+      console.error(err);
+    }
+  }
+</script>
+</body>
+</html>
